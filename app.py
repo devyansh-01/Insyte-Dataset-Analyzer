@@ -134,7 +134,7 @@ if "nav" not in st.session_state:
 
 # --- NAVBAR ---
 # We keep a large layout allocation (7.0) for the logo column to maintain the tight button grouping on the right
-col_logo, col_home, col_feat, col_about, col_contact = st.columns([6.9, 0.5, 0.65, 0.6, 1.3])
+col_logo, col_home, col_feat, col_about, col_contact, col_theme = st.columns([6.5, 0.8, 1.0, 0.8, 1.5, 0.4])
 
 with col_logo:
     # Changed padding to 0, added line-height: 42px, and set a top margin of 2px to align perfectly with the button row
@@ -221,12 +221,12 @@ elif nav == "features":
     st.markdown("<h1 style='color: #1e293b; font-weight: 800; margin-bottom: 10px;'>Platform Features</h1>", unsafe_allow_html=True)
     
     features = [
-        {"icon": "📊", "title": "Automated Statistical Analysis", "tagline": "Generate detailed statistical summaries instantly.", "items": ["Mean, Median, Mode", "Standard Deviation", "Distribution Analysis", "Column Profiling", "Numerical & Categorical Statistics"]},
-        {"icon": "🧹", "title": "Intelligent Data Cleaning", "tagline": "Improve data quality automatically.", "items": ["Missing Value Detection", "Duplicate Detection", "Inconsistency Checks", "Data Quality Assessment", "Cleaning Recommendations"]},
-        {"icon": "📈", "title": "Interactive Visualizations", "tagline": "Understand data through dynamic charts.", "items": ["Bar Charts", "Line Charts", "Histograms", "Pie Charts", "Scatter Plots"]},
-        {"icon": "🧠", "title": "AI-Powered Insights", "tagline": "Discover patterns without manual analysis.", "items": ["Trend Detection", "Correlation Discovery", "Key Findings", "Business Insights", "Automated Recommendations"]},
-        {"icon": "⚡", "title": "Fast Performance", "tagline": "Built for efficient analysis.", "items": ["Process 1000+ Rows", "Instant Results", "Optimized Calculations", "Interactive Dashboard"]},
-        {"icon": "📄", "title": "Export & Reporting", "tagline": "Share your findings effortlessly.", "items": ["Download Cleaned Data", "Export Reports", "Save Visualizations", "PDF & Excel Support"]},
+        {"icon": "", "title": "Automated Statistical Analysis", "tagline": "Generate detailed statistical summaries instantly.", "items": ["Mean, Median, Mode", "Standard Deviation", "Distribution Analysis", "Column Profiling", "Numerical & Categorical Statistics"]},
+        {"icon": "", "title": "Intelligent Data Cleaning", "tagline": "Improve data quality automatically.", "items": ["Missing Value Detection", "Duplicate Detection", "Inconsistency Checks", "Data Quality Assessment", "Cleaning Recommendations"]},
+        {"icon": "", "title": "Interactive Visualizations", "tagline": "Understand data through dynamic charts.", "items": ["Bar Charts", "Line Charts", "Histograms", "Pie Charts", "Scatter Plots"]},
+        {"icon": "", "title": "AI-Powered Insights", "tagline": "Discover patterns without manual analysis.", "items": ["Trend Detection", "Correlation Discovery", "Key Findings", "Business Insights", "Automated Recommendations"]},
+        {"icon": "", "title": "Fast Performance", "tagline": "Built for efficient analysis.", "items": ["Process 1000+ Rows", "Instant Results", "Optimized Calculations", "Interactive Dashboard"]},
+        {"icon": "", "title": "Export & Reporting", "tagline": "Share your findings effortlessly.", "items": ["Download Cleaned Data", "Export Reports", "Save Visualizations", "PDF & Excel Support"]},
     ]
     
     st.markdown("<div class='feature-grid-container'>", unsafe_allow_html=True)
