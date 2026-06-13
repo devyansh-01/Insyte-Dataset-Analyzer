@@ -126,31 +126,11 @@ st.markdown("""
         border-color: #1d4ed8 !important;
     }
 
-    /* FORCES NAVBAR IN A STRAIGHT LINE AND FIXES LAYOUT BREAKS ON MOBILE */
+    /* MOBILE FIX: force navbar into a tight single row */
     @media (max-width: 768px) {
+        /* Hide the logo column's default large text and the Streamlit column layout */
         div[data-testid="stHorizontalBlock"] {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            gap: 2px !important;
-        }
-        
-        div[data-testid="stHorizontalBlock"] [data-testid="column"] {
-            width: auto !important;
-            flex: unset !important;
-            min-width: unset !important;
-        }
-
-        div[data-testid="stHorizontalBlock"] button {
-            font-size: 12px !important;
-            padding: 4px 6px !important;
-        }
-
-        div[data-testid="stHorizontalBlock"] div:nth-child(5) button {
-            padding: 4px 10px !important;
-            font-size: 12px !important;
+            display: none !important;
         }
     }
 </style>
@@ -160,7 +140,7 @@ st.markdown("""
 if "nav" not in st.session_state:
     st.session_state.nav = "home"
 
-# --- NAVBAR ---
+# --- DESKTOP NAVBAR (original, hidden on mobile via CSS) ---
 col_logo, col_home, col_feat, col_about, col_contact, col_theme = st.columns([6.5, 0.8, 1.0, 0.8, 1.5, 0.4])
 
 with col_logo:
@@ -177,6 +157,84 @@ with col_about:
 with col_contact:
     if st.button("Contact Us", key="nav_contact"):
         st.session_state.nav = "contact"; st.rerun()
+
+# --- MOBILE NAVBAR (shown only on mobile via CSS) ---
+st.markdown("""
+<style>
+.mobile-nav {
+    display: none;
+}
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 0 10px 0;
+        flex-wrap: nowrap;
+        gap: 2px;
+    }
+    .mobile-logo {
+        font-weight: 800;
+        font-size: 22px;
+        color: black;
+        letter-spacing: -1px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        line-height: 1;
+    }
+    .mobile-logo span { color: #2563eb; }
+    .mobile-links {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+        flex-wrap: nowrap;
+    }
+    .mobile-nav-btn {
+        background: none;
+        border: none;
+        color: #4b5563;
+        font-weight: 600;
+        font-size: 12px;
+        padding: 5px 7px;
+        cursor: pointer;
+        border-radius: 50px;
+        white-space: nowrap;
+        font-family: system-ui, -apple-system, sans-serif;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .mobile-nav-cta {
+        background: #2563eb;
+        border: 2px solid #2563eb;
+        color: white !important;
+        font-weight: 600;
+        font-size: 12px;
+        padding: 5px 11px;
+        cursor: pointer;
+        border-radius: 50px;
+        white-space: nowrap;
+        font-family: system-ui, -apple-system, sans-serif;
+        text-decoration: none;
+        display: inline-block;
+    }
+}
+</style>
+<div class="mobile-nav">
+    <div class="mobile-logo">Insyte<span>.</span></div>
+    <div class="mobile-links">
+        <a class="mobile-nav-btn" href="?nav=home">Home</a>
+        <a class="mobile-nav-btn" href="?nav=features">Features</a>
+        <a class="mobile-nav-btn" href="?nav=about">About</a>
+        <a class="mobile-nav-cta" href="?nav=contact">Contact Us</a>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# --- READ NAV FROM URL QUERY PARAMS (for mobile anchor links) ---
+query_params = st.query_params
+if "nav" in query_params:
+    st.session_state.nav = query_params["nav"]
 
 st.markdown("<div style='border-bottom: 1px solid #cbd5e1; margin-top: -2px; margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
@@ -204,12 +262,12 @@ if nav == "home":
         .icon-stack { background: #e0e7ff; width: 35px; height: 35px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; margin-bottom: 12px; }
         .stack-line { width: 16px; height: 3px; background: #4338ca; border-radius: 1px; }
 
-        /* SCALES DOWN INTERFACE CONTAINER SO ABSOLUTE POSITIONS MATCH THE DESKTOP ASPECT RATIO VISUALLY */
         @media (max-width: 768px) {
-            body { zoom: 0.42; -moz-transform: scale(0.42); -moz-transform-origin: 0 0; }
-            .hero { padding: 60px 20px 30px 20px; width: 1024px; margin: 0 auto; }
-            .c1 { top: 12%; left: 2%; } .c2 { top: 15%; right: 2%; }
-            .c3 { bottom: 5%; left: 2%; } .c4 { bottom: 5%; right: 2%; }
+            .hero { padding: 30px 6% 30px 6%; }
+            h1 { font-size: 36px; letter-spacing: -1px; }
+            p { font-size: 15px; }
+            .float-card { display: none; }
+            .btn-main { font-size: 15px; padding: 14px 32px; }
         }
     </style>
     <div class="hero">
@@ -265,7 +323,6 @@ elif nav == "features":
     
     st.markdown("<div class='feature-grid-container'>", unsafe_allow_html=True)
     
-    # Split features into rows of 3 columns each
     for i in range(0, len(features), 3):
         row_features = features[i:i+3]
         cols = st.columns(3)
