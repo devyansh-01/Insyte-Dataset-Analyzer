@@ -65,7 +65,7 @@ st.markdown("""
         border-radius: 16px; 
         margin-bottom: 24px; 
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); 
-        height: 280px; /* Forces all cards to have an identical height */
+        min-height: 280px; /* Changed from height to min-height for mobile text wrapping */
         overflow: hidden;
     }
     .feature-title { 
@@ -125,6 +125,27 @@ st.markdown("""
         background: #1d4ed8 !important;
         border-color: #1d4ed8 !important;
     }
+
+    /* --- MOBILE RESPONSIVE OVERRIDES --- */
+    @media (max-width: 768px) {
+        .float-card {
+            position: relative !important;
+            margin: 15px auto !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            animation: none !important;
+            width: 85% !important;
+        }
+        h1 {
+            font-size: 38px !important;
+        }
+        div[data-testid="stHorizontalBlock"] button {
+            font-size: 14px !important;
+            padding: 4px 6px !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -133,12 +154,11 @@ if "nav" not in st.session_state:
     st.session_state.nav = "home"
 
 # --- NAVBAR ---
-# We keep a large layout allocation (7.0) for the logo column to maintain the tight button grouping on the right
 col_logo, col_home, col_feat, col_about, col_contact, col_theme = st.columns([6.5, 0.8, 1.0, 0.8, 1.5, 0.4])
 
 with col_logo:
-    # Changed padding to 0, added line-height: 42px, and set a top margin of 2px to align perfectly with the button row
-    st.markdown("<p style='font-weight:800; font-size:28px; color:black; letter-spacing:-1px; padding:0; margin: 2px 0 0 100px; line-height: 42px;'>Insyte<span style=\"color:#2563eb\">.</span></p>", unsafe_allow_html=True)
+    # Uses a responsive CSS variable to keep 100px margin on desktop but drops it safely on mobile screens
+    st.markdown("<p style='font-weight:800; font-size:28px; color:black; letter-spacing:-1px; padding:0; margin: 2px 0 0 var(--logo-margin, 0px); line-height: 42px;'>Insyte<span style=\"color:#2563eb\">.</span></p><style>@media(min-width:769px){:root{--logo-margin: 100px;}}</style>", unsafe_allow_html=True)
 with col_home:
     if st.button("Home", key="nav_home"):
         st.session_state.nav = "home"; st.rerun()
@@ -177,6 +197,25 @@ if nav == "home":
         .bar { width: 8px; border-radius: 2px; }
         .icon-stack { background: #e0e7ff; width: 35px; height: 35px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; margin-bottom: 12px; }
         .stack-line { width: 16px; height: 3px; background: #4338ca; border-radius: 1px; }
+
+        @media (max-width: 768px) {
+            .float-card {
+                position: relative !important;
+                margin: 15px auto !important;
+                left: 0 !important;
+                right: 0 !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                animation: none !important;
+                width: 85% !important;
+            }
+            h1 {
+                font-size: 38px !important;
+            }
+            .hero {
+                padding: 40px 5% 20px 5% !important;
+            }
+        }
     </style>
     <div class="hero">
         <div class="float-card c1">
@@ -213,7 +252,7 @@ if nav == "home":
         <button class="btn-main" onclick="window.parent.document.querySelector('#upload_area').scrollIntoView({behavior:'smooth'})">Analyze Data →</button>
     </div>
     """
-    components.html(hero_body, height=620)
+    components.html(hero_body, height=620, scrolling=True)
 
 # --- FEATURES ---
 elif nav == "features":
@@ -297,7 +336,7 @@ elif nav == "about":
     </div>
     """
     # Using components.html isolates the layout completely from Streamlit's inner markdown rules
-    components.html(about_html, height=550, scrolling=False)
+    components.html(about_html, height=550, scrolling=True)
     st.stop()
 
 # --- CONTACT ---
@@ -312,31 +351,26 @@ elif nav == "contact":
             Have questions about the project, want to collaborate, or discuss data analytics opportunities? Drop a line below!
         </p>
 
-        <!-- 2x2 Clean Grid Layout for Personal Contact -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
             
-            <!-- Email Card -->
             <div style="padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
                 <div style="font-weight: 700; font-size: 18px; color: #1e293b; margin-bottom: 6px;">Email</div>
                 <div style="font-size: 14px; color: #64748b; margin-bottom: 12px;">Feel free to reach out directly for project inquiries or feedback.</div>
                 <a href="mailto:devyanshsingh05@gmail.com" style="color: #2563eb; font-weight: 600; text-decoration: none; font-size: 15px;">devyanshsingh05@gmail.com →</a>
             </div>
 
-            <!-- Modified Phone Card -->
             <div style="padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
                 <div style="font-weight: 700; font-size: 18px; color: #1e293b; margin-bottom: 6px;">Phone Number</div>
                 <div style="font-size: 14px; color: #64748b; margin-bottom: 12px;">Let's connect directly via call or message.</div>
                 <a href="tel:+917055530007" style="color: #2563eb; font-weight: 600; text-decoration: none; font-size: 15px;">+91 70555 30007 →</a>
             </div>
 
-            <!-- LinkedIn Card -->
             <div style="padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
                 <div style="font-weight: 700; font-size: 18px; color: #1e293b; margin-bottom: 6px;">LinkedIn Profile</div>
                 <div style="font-size: 14px; color: #64748b; margin-bottom: 12px;">Let's connect! I post about my software developments and technical milestones.</div>
                 <a href="https://linkedin.com/in/devyanshsingh05" target="_blank" style="color: #2563eb; font-weight: 600; text-decoration: none; font-size: 15px;">linkedin.com/in/devyanshsingh05 →</a>
             </div>
 
-            <!-- Modified GitHub Card -->
             <div style="padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
                 <div style="font-weight: 700; font-size: 18px; color: #1e293b; margin-bottom: 6px;">Source Code & Contributions (GitHub)</div>
                 <div style="font-size: 14px; color: #64748b; margin-bottom: 12px;">Check out source repositories, builds, and development contributions.</div>
@@ -346,7 +380,7 @@ elif nav == "contact":
         </div>
     </div>
     """
-    components.html(contact_html, height=600, scrolling=False)
+    components.html(contact_html, height=600, scrolling=True)
     st.stop()
 
 # --- UPLOAD SECTION (home only) ---
