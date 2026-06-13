@@ -65,7 +65,7 @@ st.markdown("""
         border-radius: 16px; 
         margin-bottom: 24px; 
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); 
-        min-height: 280px; /* Changed from height to min-height for mobile text wrapping */
+        min-height: 280px; 
         overflow: hidden;
     }
     .feature-title { 
@@ -126,24 +126,31 @@ st.markdown("""
         border-color: #1d4ed8 !important;
     }
 
-    /* --- MOBILE RESPONSIVE OVERRIDES --- */
+    /* FORCES NAVBAR IN A STRAIGHT LINE AND FIXES LAYOUT BREAKS ON MOBILE */
     @media (max-width: 768px) {
-        .float-card {
-            position: relative !important;
-            margin: 15px auto !important;
-            left: 0 !important;
-            right: 0 !important;
-            top: 0 !important;
-            bottom: 0 !important;
-            animation: none !important;
-            width: 85% !important;
+        div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 2px !important;
         }
-        h1 {
-            font-size: 38px !important;
+        
+        div[data-testid="stHorizontalBlock"] [data-testid="column"] {
+            width: auto !important;
+            flex: unset !important;
+            min-width: unset !important;
         }
+
         div[data-testid="stHorizontalBlock"] button {
-            font-size: 14px !important;
+            font-size: 12px !important;
             padding: 4px 6px !important;
+        }
+
+        div[data-testid="stHorizontalBlock"] div:nth-child(5) button {
+            padding: 4px 10px !important;
+            font-size: 12px !important;
         }
     }
 </style>
@@ -157,7 +164,6 @@ if "nav" not in st.session_state:
 col_logo, col_home, col_feat, col_about, col_contact, col_theme = st.columns([6.5, 0.8, 1.0, 0.8, 1.5, 0.4])
 
 with col_logo:
-    # Uses a responsive CSS variable to keep 100px margin on desktop but drops it safely on mobile screens
     st.markdown("<p style='font-weight:800; font-size:28px; color:black; letter-spacing:-1px; padding:0; margin: 2px 0 0 var(--logo-margin, 0px); line-height: 42px;'>Insyte<span style=\"color:#2563eb\">.</span></p><style>@media(min-width:769px){:root{--logo-margin: 100px;}}</style>", unsafe_allow_html=True)
 with col_home:
     if st.button("Home", key="nav_home"):
@@ -182,7 +188,7 @@ if nav == "home":
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; background: white; overflow-x: hidden; }
-        .hero { text-align: center; padding: 80px 15% 30px 15%; position: relative; }
+        .hero { text-align: center; padding: 80px 15% 30px 15%; position: relative; width: 100%; box-sizing: border-box; }
         .badge { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; padding: 6px 15px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; display: inline-block; margin-bottom: 25px; letter-spacing: 1px; }
         h1 { font-size: 64px; font-weight: 800; line-height: 1.1; color: #111827; margin: 0 0 25px 0; letter-spacing: -2px; }
         h1 span { color: #4f46e5; }
@@ -198,23 +204,12 @@ if nav == "home":
         .icon-stack { background: #e0e7ff; width: 35px; height: 35px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; margin-bottom: 12px; }
         .stack-line { width: 16px; height: 3px; background: #4338ca; border-radius: 1px; }
 
+        /* SCALES DOWN INTERFACE CONTAINER SO ABSOLUTE POSITIONS MATCH THE DESKTOP ASPECT RATIO VISUALLY */
         @media (max-width: 768px) {
-            .float-card {
-                position: relative !important;
-                margin: 15px auto !important;
-                left: 0 !important;
-                right: 0 !important;
-                top: 0 !important;
-                bottom: 0 !important;
-                animation: none !important;
-                width: 85% !important;
-            }
-            h1 {
-                font-size: 38px !important;
-            }
-            .hero {
-                padding: 40px 5% 20px 5% !important;
-            }
+            body { zoom: 0.42; -moz-transform: scale(0.42); -moz-transform-origin: 0 0; }
+            .hero { padding: 60px 20px 30px 20px; width: 1024px; margin: 0 auto; }
+            .c1 { top: 12%; left: 2%; } .c2 { top: 15%; right: 2%; }
+            .c3 { bottom: 5%; left: 2%; } .c4 { bottom: 5%; right: 2%; }
         }
     </style>
     <div class="hero">
@@ -252,7 +247,7 @@ if nav == "home":
         <button class="btn-main" onclick="window.parent.document.querySelector('#upload_area').scrollIntoView({behavior:'smooth'})">Analyze Data →</button>
     </div>
     """
-    components.html(hero_body, height=620, scrolling=True)
+    components.html(hero_body, height=620)
 
 # --- FEATURES ---
 elif nav == "features":
@@ -273,7 +268,7 @@ elif nav == "features":
     # Split features into rows of 3 columns each
     for i in range(0, len(features), 3):
         row_features = features[i:i+3]
-        cols = st.columns(3) # Creates 3 equal-width column blocks horizontally
+        cols = st.columns(3)
         
         for col, feature in zip(cols, row_features):
             with col:
@@ -335,8 +330,7 @@ elif nav == "about":
         </div>
     </div>
     """
-    # Using components.html isolates the layout completely from Streamlit's inner markdown rules
-    components.html(about_html, height=550, scrolling=True)
+    components.html(about_html, height=550, scrolling=False)
     st.stop()
 
 # --- CONTACT ---
@@ -351,7 +345,7 @@ elif nav == "contact":
             Have questions about the project, want to collaborate, or discuss data analytics opportunities? Drop a line below!
         </p>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px;">
             
             <div style="padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
                 <div style="font-weight: 700; font-size: 18px; color: #1e293b; margin-bottom: 6px;">Email</div>
@@ -380,7 +374,7 @@ elif nav == "contact":
         </div>
     </div>
     """
-    components.html(contact_html, height=600, scrolling=True)
+    components.html(contact_html, height=600, scrolling=False)
     st.stop()
 
 # --- UPLOAD SECTION (home only) ---
